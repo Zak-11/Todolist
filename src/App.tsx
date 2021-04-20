@@ -23,7 +23,7 @@ function App() {
         {id: v1(), title: "React",isDone: false}
     ])
 
-     const [filter, setFilter] = useState<"all" | "active" | "completed"> ("all")
+     let [filter, setFilter] = useState<"all" | "active" | "completed"> ("all")
 
 
     function removeTask(taskID: string ) {
@@ -37,10 +37,13 @@ function App() {
             title: title,
             isDone: false
 
+
         }
         setTasks([newTask,...tasks])
     }
-
+function changeTaskStatus(taskID: string, newIsDoneValue:boolean) {
+        setTasks(tasks.map(t => t.id === taskID ? {...t, isDone: newIsDoneValue} :t))
+}
 
     function  changeFilter(value: FilterValuesType) {
         setFilter(value)
@@ -67,6 +70,8 @@ function App() {
             addTask={addTask}
             removeTask={removeTask}
             changeFilter={changeFilter}
+            filter={filter}
+            changeTaskStatus={changeTaskStatus}
         />
 
 
