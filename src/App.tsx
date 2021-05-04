@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import TodoList, {TaskType} from "./TodoList";
 import {v1} from "uuid";
-
-
+import AddItemForm from "./AddItenForm";
 
 
 export type FilterValuesType = "all" | "active" | "completed"
@@ -19,11 +18,13 @@ type TaskStateType = {
 }
 
 function App() {
+    debugger;
     const todoListID_1 = v1()
     const todoListID_2 = v1()
+
     const [todoList, setTodoLists] = useState<Array<TodoListType>>([
-        {id: todoListID_1, title: "What to learn", filter: "all"},
-        {id: todoListID_2, title: "What to buy", filter: "all"},
+        {id: todoListID_1 , title: "What to learn", filter: "all"},
+        {id: todoListID_2 , title: "What to buy", filter: "all"},
 
     ])
 
@@ -65,14 +66,23 @@ function App() {
 
         })
     }
+    function changeTaskTitle(taskID: string, newTitle:string, todoListID: string) {
+        setTasks({...tasks,
+            [todoListID]: tasks[todoListID].map(t => t.id === taskID ? {...t, title: newTitle } : t)
 
+        })
+    }
     function removeTodoList(todoListID: string) {
         setTodoLists(todoList.filter(tl => tl.id ! === todoListID))
         delete tasks[todoListID]
     }
 
     function changeFilter(value: FilterValuesType, todoListID: string) {
-        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, filter: value} : tl))
+        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl,filter: value} : tl))
+    }
+
+    function changeTodolistTitle(title: string, todoListID: string) {
+        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, title: title} : tl))
     }
 
     function getTasksForTodolist(todoList: TodoListType) {
@@ -86,37 +96,44 @@ function App() {
         }
     }
 
+    function addTodolist(title: string) {
+        const newTodolistID = v1()
+        const newTodolist: TodoListType = {id: newTodolistID, title, filter: "all"}
+        setTodoLists([...todoList, newTodolist])
+        setTasks({...tasks, [newTodolistID]: []})
+    }
+
+
+    const todoListComponents = todoList.map(tl => {
+
+
+            return (
+                <TodoList
+                    key={tl.id}
+                    id={tl.id}
+                    todoListID={tl.id}
+                    title={tl.title}
+                    tasks={getTasksForTodolist(tl)}
+                    removeTask={removeTask}
+                    changeFilter={changeFilter}
+                    addTask={addTask}
+                    changeTaskStatus={changeTaskStatus}
+                    filter={tl.filter}
+                    removeTodoList={removeTodoList}
+                    changeTaskTitle={ changeTaskTitle}
+                    changeTodolistTitle={changeTodolistTitle}
+                />
+            )
+        }
+    )
 
     return (
         <div className={'App'}>
-            {
-                todoList.map((tl) => {
-
-
-                    return <TodoList
-                        key={tl.id}
-                        id={tl.id}
-                        todoListID={tl.id}
-                        title={tl.title}
-                        tasks={getTasksForTodolist(tl)}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        addTask={addTask}
-                        changeTaskStatus={changeTaskStatus}
-                        filter={tl.filter}
-                        removeTodoList={removeTodoList}
-
-           />
-
-
-                }   )
-
-            }
-
+            <AddItemForm addItem={addTodolist}/>
+            {todoListComponents}
         </div>
     )
-            }
-
+}
 
 
 export default App;
