@@ -9,7 +9,7 @@ import {Menu} from "@material-ui/icons";
 
 export type FilterValuesType = "all" | "active" | "completed"
 
-type TodoListType = {
+export type TodoListType = {
     id: string
     title: string
     filter: FilterValuesType
@@ -60,7 +60,6 @@ export function App() {
         }
         setTasks({...tasks, [todoListID]: [newTask, ...tasks[todoListID]]})
     }
-
     function changeTaskStatus(taskID: string, newIsDoneValue: boolean, todoListID: string) {
         setTasks({
             ...tasks,
@@ -68,7 +67,6 @@ export function App() {
 
         })
     }
-
     function changeTaskTitle(taskID: string, newTitle: string, todoListID: string) {
         setTasks({
             ...tasks,
@@ -76,20 +74,6 @@ export function App() {
 
         })
     }
-
-    function removeTodoList(todoListID: string) {
-        setTodoLists(todoList.filter(tl => tl.id ! === todoListID))
-        delete tasks[todoListID]
-    }
-
-    function changeFilter(value: FilterValuesType, todoListID: string) {
-        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, filter: value} : tl))
-    }
-
-    function changeTodolistTitle(title: string, todoListID: string) {
-        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, title: title} : tl))
-    }
-
     function getTasksForTodolist(todoList: TodoListType) {
         switch (todoList.filter) {
             case "active":
@@ -101,6 +85,18 @@ export function App() {
         }
     }
 
+    // todoLists:
+
+    function changeFilter(value: FilterValuesType, todoListID: string) {
+        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, filter: value} : tl))
+    }
+    function removeTodoList(todoListID: string) {
+        setTodoLists(todoList.filter(tl => tl.id ! === todoListID))
+        delete tasks[todoListID]
+    }
+    function changeTodolistTitle(title: string, todoListID: string) {
+        setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, title: title} : tl))
+    }
     function addTodolist(title: string) {
         const newTodolistID = v1()
         const newTodolist: TodoListType = {id: newTodolistID, title, filter: "all"}
@@ -110,9 +106,7 @@ export function App() {
 
 
     const todoListComponents = todoList.map(tl => {
-
-
-            return (
+        return (
                 <Grid item  key={tl.id}>
                 <Paper elevation={5} style={{padding: "20px"}}>
                     <TodoList

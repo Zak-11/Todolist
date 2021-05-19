@@ -48,6 +48,7 @@ function AddItemForm(props: AddItemFormPropsType) {
                 onKeyPress={onKeyPressAddItem}
                 helperText={ error && "Title is required!"}
                 size={"small"}
+                onBlur={() => setError(false)}
             />
             {/*<input className={error ? "error" : ""}
                    value={title}
