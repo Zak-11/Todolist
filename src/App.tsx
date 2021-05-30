@@ -91,7 +91,7 @@ export function App() {
         setTodoLists(todoList.map(tl => tl.id === todoListID ? {...tl, filter: value} : tl))
     }
     function removeTodoList(todoListID: string) {
-        setTodoLists(todoList.filter(tl => tl.id ! === todoListID))
+        setTodoLists(todoList.filter(tl => tl.id !== todoListID))
         delete tasks[todoListID]
     }
     function changeTodolistTitle(title: string, todoListID: string) {
