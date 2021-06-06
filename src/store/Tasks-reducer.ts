@@ -32,6 +32,9 @@ export type ChangeTitleTaskAC = {
     title: string
     todolistId: string
 }
+
+let initialState  : TasksStateType = {}
+
 export type ActionUnionType = RemoveTasksActionType
     | addTaskAC
     | ChangeTaskAC
@@ -40,7 +43,7 @@ export type ActionUnionType = RemoveTasksActionType
     | RemoveTodoListAT
 
 
-export const tasksReducer = (state: TasksStateType, action: ActionUnionType) => {
+export const tasksReducer = (state = initialState, action: ActionUnionType) : TasksStateType => {
     switch (action.type) {
         case "REMOVE_TASK":
             return {
@@ -83,14 +86,14 @@ export const tasksReducer = (state: TasksStateType, action: ActionUnionType) => 
         }
 
 
-    case "REMOVE-TODOLIST":
+    case "REMOVE-TODOLIST":{
         let copyState = {...state}
         delete copyState[action.todoListID]
     return copyState
+    }
 
-
-default:
-    throw new Error("I dont understand this type")
+   default:
+    return state
 }
 }
 
