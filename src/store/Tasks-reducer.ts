@@ -19,6 +19,7 @@ export type addTaskAC = {
 }
 
 export type ChangeTaskAC = {
+
     type: "CHANGE_TASK"
     taskId: string
     isDone: boolean
@@ -54,17 +55,15 @@ export const tasksReducer = (state: TasksStateType, action: ActionUnionType) => 
                 [action.todolistId]: [task, ...state[action.todolistId]],
             }
 
-        case "CHANGE_TASK":
+        case "CHANGE_TASK": {
             return {
-                ...state,
-                [action.todolistId]: state[action.todolistId].map(task => {
-                    if (task.id === action.taskId) {
-                        return {...task, isDone: action.isDone}
-                    } else
-                        return task
-
-                })
+                ...state, [action.todolistId]:
+                    state[action.todolistId].map(task => task.id === action.taskId ? {
+                        ...task,
+                        isDone: action.isDone
+                    } : task)
             }
+        }
 
         case "CHANGE_TILT_TASK":
             return {
