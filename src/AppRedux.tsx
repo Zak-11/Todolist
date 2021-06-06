@@ -44,8 +44,8 @@ function AppWithRedux() {
     function addTask(title: string, todoListID: string) {
         dispatch(addTaskAC(title, todoListID))
     }
-    function changeTaskStatus(taskID: string, isDone: boolean,  todoListID: string) {
-        dispatch(changeTaskStatusAC(taskID, isDone, todoListID))
+    function changeTaskStatus(taskID: string,newIsDoneValue: boolean,  todoListID: string) {
+        dispatch(changeTaskStatusAC(taskID, newIsDoneValue, todoListID))
     }
     function changeTaskTitle(taskID: string, newTitle: string, todoListID: string) {
         dispatch(changeTitleTaskStatusAC(taskID, newTitle,todoListID))

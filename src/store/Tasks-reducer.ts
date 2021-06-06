@@ -22,7 +22,7 @@ export type ChangeTaskAC = {
 
     type: "CHANGE_TASK"
     taskId: string
-    isDone: boolean
+    newIsDoneValue: boolean
     todolistId: string
 }
 
@@ -63,7 +63,7 @@ export const tasksReducer = (state = initialState, action: ActionUnionType) : Ta
                 ...state, [action.todolistId]:
                     state[action.todolistId].map(task => task.id === action.taskId ? {
                         ...task,
-                        isDone: action.isDone
+                        isDone: action.newIsDoneValue
                     } : task)
             }
         }
@@ -105,8 +105,8 @@ export const addTaskAC = (title: string, todolistId: string): addTaskAC => {
     return {type: "ADD_TASK", title, todolistId}
 }
 
-export const changeTaskStatusAC = (taskId: string, isDone: boolean, todolistId: string): ChangeTaskAC => {
-    return {type: "CHANGE_TASK", taskId, isDone, todolistId}
+export const changeTaskStatusAC = (taskId: string, newIsDoneValue: boolean, todolistId: string): ChangeTaskAC => {
+    return {type: "CHANGE_TASK", taskId, newIsDoneValue, todolistId}
 }
 
 export const changeTitleTaskStatusAC = (taskId: string, title: string, todolistId: string): ChangeTitleTaskAC => {

@@ -68,8 +68,8 @@ function AppWithReducer() {
     function addTask(title: string, todoListID: string) {
         dispatchTasks(addTaskAC(title, todoListID))
     }
-    function changeTaskStatus(taskID: string, isDone: boolean,  todoListID: string) {
-        dispatchTasks(changeTaskStatusAC(taskID, isDone, todoListID))
+    function changeTaskStatus(taskID: string, newIsDoneValue: boolean,  todoListID: string) {
+        dispatchTasks(changeTaskStatusAC(taskID, newIsDoneValue, todoListID))
     }
     function changeTaskTitle(taskID: string, newTitle: string, todoListID: string) {
         dispatchTasks(changeTitleTaskStatusAC(taskID, newTitle,todoListID))
