@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import './App.css';
 import TodoList, {TaskType} from "./TodoList";
 import {v1} from "uuid";
@@ -52,14 +52,14 @@ export function App() {
         setTasks({...tasks})
     }
 
-    function addTask(title: string, todoListID: string) {
+    const addTask = useCallback((title: string, todoListID: string) =>{
         const newTask: TaskType = {
             id: v1(),
             title: title,
             isDone: false
         }
         setTasks({...tasks, [todoListID]: [newTask, ...tasks[todoListID]]})
-    }
+    },[])
     function changeTaskStatus(taskID: string, newIsDoneValue: boolean, todoListID: string) {
         setTasks({
             ...tasks,
@@ -114,15 +114,14 @@ export function App() {
                         todoListID={tl.id}
                         title={tl.title}
                         tasks={getTasksForTodolist(tl)}
-                        removeTask={removeTask}
                         changeFilter={changeFilter}
                         addTask={addTask}
                         changeTaskStatus={changeTaskStatus}
                         filter={tl.filter}
                         removeTodoList={removeTodoList}
-                        changeTaskTitle={changeTaskTitle}
                         changeTodolistTitle={changeTodolistTitle}
-                    />
+                        changeTaskTitle={changeTaskTitle}
+                        removeTask={removeTask}/>
                 </Paper>
             </Grid>
             )

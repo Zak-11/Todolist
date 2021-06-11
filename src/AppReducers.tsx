@@ -1,4 +1,4 @@
-import React, {useReducer} from 'react';
+import React, {useCallback, useReducer} from 'react';
 import './App.css';
 import TodoList, {TaskType} from "./TodoList";
 import {v1} from "uuid";
@@ -20,7 +20,6 @@ import {
     tasksReducer
 } from "./store/Tasks-reducer";
 
-
 export type FilterValuesType = "all" | "active" | "completed"
 
 export type TodoListType = {
@@ -38,7 +37,7 @@ function AppWithReducer() {
     const todoListID_1 = v1()
     const todoListID_2 = v1()
 
-    const [todoList, dispatchTodoLists] = useReducer(todoListsReducer,[
+    const [todoList, dispatchTodoLists] = useReducer(todoListsReducer, [
         {id: todoListID_1, title: "What to learn", filter: "all"},
         {id: todoListID_2, title: "What to buy", filter: "all"},
 
@@ -61,71 +60,66 @@ function AppWithReducer() {
     })
 
 
-    function removeTask(taskID: string, todoListID: string) {
-        dispatchTasks( removeTasksAC(taskID, todoListID))
-    }
+    const removeTask = useCallback((taskID: string, todoListID: string) => {
+        dispatchTasks(removeTasksAC(taskID, todoListID))
+    }, [dispatchTasks])
 
-    function addTask(title: string, todoListID: string) {
+
+    const addTask = useCallback((title: string, todoListID: string) => {
         dispatchTasks(addTaskAC(title, todoListID))
-    }
-    function changeTaskStatus(taskID: string, newIsDoneValue: boolean,  todoListID: string) {
+    }, [dispatchTasks])
+
+    const changeTaskStatus = useCallback((taskID: string, newIsDoneValue: boolean, todoListID: string) => {
         dispatchTasks(changeTaskStatusAC(taskID, newIsDoneValue, todoListID))
-    }
-    function changeTaskTitle(taskID: string, newTitle: string, todoListID: string) {
-        dispatchTasks(changeTitleTaskStatusAC(taskID, newTitle,todoListID))
-    }
+    }, [dispatchTasks])
 
-    function getTasksForTodolist(todoList: TodoListType) {
-        switch (todoList.filter) {
-            case "active":
-                return tasks[todoList.id].filter(t => !t.isDone)
-            case "completed":
-                return tasks[todoList.id].filter(t => t.isDone)
-            default:
-                return tasks[todoList.id]
-        }
-    }
+    const changeTaskTitle = useCallback((taskID: string, newTitle: string, todoListID: string) => {
+        dispatchTasks(changeTitleTaskStatusAC(taskID, newTitle, todoListID))
+    }, [dispatchTasks])
 
-    // todoLists:
 
-    function changeFilter(value: FilterValuesType, todoListID: string) {
-        dispatchTodoLists(ChangeTodoFilterListAC(todoListID,value))
-    }
-    function removeTodoList(todoListID: string) {
+    const changeFilter = useCallback((value: FilterValuesType, todoListID: string) => {
+        dispatchTodoLists(ChangeTodoFilterListAC(todoListID, value))
+    }, [dispatchTodoLists])
+
+    const removeTodoList = useCallback((todoListID: string) => {
         let action = RemoveTodolistAC(todoListID)
         dispatchTodoLists(action)
         dispatchTasks(action)
-    }
-    function changeTodolistTitle(title: string, todolistID: string) {
-        dispatchTodoLists (ChangeTodolistAC (todolistID,title,))
-    }
-    function addTodolist(title: string) {
+    }, [dispatchTodoLists])
+
+    const changeTodolistTitle = useCallback((title: string, todolistID: string) => {
+        dispatchTodoLists(ChangeTodolistAC(todolistID, title,))
+    }, [dispatchTodoLists])
+
+    const addTodolist = useCallback((title: string) => {
         let action = AddTodolistAC(title)
         dispatchTodoLists(action)
         dispatchTasks(action)
-    }
+    }, [dispatchTodoLists])
 
 
     const todoListComponents = todoList.map((tl) => {
-        return (
-                <Grid item  key={tl.id}>
-                <Paper elevation={5} style={{padding: "20px"}}>
-                    <TodoList
-                        id={tl.id}
-                        todoListID={tl.id}
-                        title={tl.title}
-                        tasks={getTasksForTodolist(tl)}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        addTask={addTask}
-                        changeTaskStatus={changeTaskStatus}
-                        filter={tl.filter}
-                        removeTodoList={removeTodoList}
-                        changeTaskTitle={changeTaskTitle}
-                        changeTodolistTitle={changeTodolistTitle}
-                    />
-                </Paper>
-            </Grid>
+
+            return (
+                <Grid item key={tl.id}>
+                    <Paper elevation={5} style={{padding: "20px"}}>
+                        <TodoList
+                            id={tl.id}
+                            todoListID={tl.id}
+                            title={tl.title}
+                            tasks={tasks[tl.id]}
+                            removeTask={removeTask}
+                            changeFilter={changeFilter}
+                            addTask={addTask}
+                            changeTaskStatus={changeTaskStatus}
+                            filter={tl.filter}
+                            removeTodoList={removeTodoList}
+                            changeTaskTitle={changeTaskTitle}
+                            changeTodolistTitle={changeTodolistTitle}
+                        />
+                    </Paper>
+                </Grid>
             )
         }
     )
@@ -135,32 +129,33 @@ function AppWithReducer() {
         <div>
 
             <AppBar position={"static"}>
-            <Toolbar style={{justifyContent: "space-between"}}>
-                <IconButton color={"inherit"}>
-                    <Menu/>
-                </IconButton>
-                <Typography variant={"h6"}>
-                    Todolist
-                </Typography>
-                <Button
-                    color = {"inherit"}
-                    variant={"outlined"}
+                <Toolbar style={{justifyContent: "space-between"}}>
+                    <IconButton color={"inherit"}>
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant={"h6"}>
+                        Todolist
+                    </Typography>
+                    <Button
+                        color={"inherit"}
+                        variant={"outlined"}
 
-                >Login</Button>
+                    >Login</Button>
                 </Toolbar>
-           </AppBar>
-                <Container fixed>
-                    < Grid container style={{padding: "20px 0px"}}>
-                        <AddItemForm addItem={addTodolist}/>
-                    </Grid>
-                    <Grid container spacing={3}>
-                        {todoListComponents}
+            </AppBar>
+            <Container fixed>
+                < Grid container style={{padding: "20px 0px"}}>
+                    <AddItemForm addItem={addTodolist}/>
+                </Grid>
+                <Grid container spacing={3}>
+                    {todoListComponents}
 
-                        </Grid>
-                            </Container>
-                        </div>
+                </Grid>
+            </Container>
+        </div>
 
 
-);
+    );
 }
- export default  AppWithReducer;
+
+export default AppWithReducer;

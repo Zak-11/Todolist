@@ -8,18 +8,12 @@ type AddItemFormPropsType = {
 }
 
 
-function AddItemForm(props: AddItemFormPropsType) {
-    const [title, setTitle] = useState<string>("")
-    const [error, setError] = useState<boolean>(false)
+const AddItemForm = React.memo((props: AddItemFormPropsType) => {
 
+    let [title, setTitle] = useState<string>("")
+    let [error, setError] = useState<boolean>(true)
 
-    const onKeyPressAddItem = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            onClickAddItem()
-        }
-    }
-
-    const onClickAddItem = () => {
+    const addItem = () => {
         const trimmedTitle = title.trim()
         if (trimmedTitle) {
             props.addItem(trimmedTitle)
@@ -30,42 +24,46 @@ function AddItemForm(props: AddItemFormPropsType) {
         setTitle("")
 
     }
+
+
     const onChangeItem = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
         setError(false)
     }
-    /*const errorMessage = error
-        ? <div style={{color: "error-message"}}>Title is required! </div>
-        : nul*/
+
+    const onKeyPressAddItem = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (error !== null) {
+            setError(true)
+        }
+        if (e.key === "Enter") {
+            addItem()
+        }
+
+    }
+
 
     return (
         <div>
             <TextField
                 variant={"outlined"}
-                error={error}
+                error={!!error}
                 value={title}
                 onChange={onChangeItem}
                 onKeyPress={onKeyPressAddItem}
-                helperText={ error && "Title is required!"}
+                helperText={error && "Title is required!"}
                 size={"small"}
-                onBlur={() => setError(false)}
-            />
-            {/*<input className={error ? "error" : ""}
-                   value={title}
-                   onChange={onChangeItem}
-                   onKeyPress={onKeyPressAddItem}
-            />*/}
-            {/* <button onClick={onClickAddItem}>+</button>*/}
-            <IconButton onClick={onClickAddItem}
+                onBlur={() => setError(true)}/>
+
+            <IconButton onClick={addItem}
                         color={"primary"}>
                 <AddBox/>
 
             </IconButton>
-         {/*   {errorMessage}*/}
+
         </div>
 
     )
-}
+})
 
 
 export default AddItemForm

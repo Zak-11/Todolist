@@ -60,7 +60,9 @@ export const tasksReducer = (state = initialState, action: ActionUnionType) : Ta
 
         case "CHANGE_TASK": {
             return {
-                ...state, [action.todolistId]:
+                ...state,
+                [action.todolistId]:
+
                     state[action.todolistId].map(task => task.id === action.taskId ? {
                         ...task,
                         isDone: action.newIsDoneValue
