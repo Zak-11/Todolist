@@ -28,13 +28,7 @@ function EditableSpan(props:EditableSpanProps ){
                 onChange={onChangeTitle}
                 onBlur={offEditMode}
             />
-       /*? <input
-                value={title}
-                autoFocus
-                onChange={onChangeTitle}
-                onBlur={offEditMode}
-            />
-*/
+
        :<span onDoubleClick={onEditMode}>{props.title}</span>
     )
 
