@@ -6,15 +6,15 @@ import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography}
 import {
     addTodolistAC,
     changeTodolistFilterAC,
-    changeTodolistTitleAC,
+    changeTodolistTitleAC, fetchTodolistsThunk,
     FilterValuesType,
-    removeTodolistAC, setTodolistAC,
+    removeTodolistAC,
     TodolistDomainType
 } from './state/todolists-reducer'
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './state/tasks-reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from './state/store';
-import {TaskStatuses, TaskType, todolistsAPI} from './api/todolists-api'
+import {TaskStatuses, TaskType} from './api/todolists-api'
 import {Menu} from "@material-ui/icons";
 
 
@@ -30,10 +30,7 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        todolistsAPI.getTodolists().then((res)=> {
-            let todos = res.data
-            dispatch(setTodolistAC(todos))
-        })
+     dispatch(fetchTodolistsThunk)
     },[])
 
 
