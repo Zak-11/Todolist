@@ -1,5 +1,7 @@
-import {FilterValuesType, TodolistType} from '../App';
 import {v1} from 'uuid';
+import {TodolistType} from '../api/todolists-api'
+
+
 
 export type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST',
@@ -24,19 +26,36 @@ export type ChangeTodolistFilterActionType = {
 type ActionsType = RemoveTodolistActionType | AddTodolistActionType
     | ChangeTodolistTitleActionType
     | ChangeTodolistFilterActionType
+| setTodolistActionType
 
-const initialState: Array<TodolistType> =  []
+const initialState: Array<TodolistDomainType> =  [
+    /*{id: todolistId1, title: 'What to learn', filter: 'all', addedDate: '', order: 0},
+    {id: todolistId2, title: 'What to buy', filter: 'all', addedDate: '', order: 0}*/
+]
 
-export const todolistsReducer = (state: Array<TodolistType> = initialState, action: ActionsType): Array<TodolistType> => {
+export type FilterValuesType = "all" | "active" | "completed";
+export type TodolistDomainType = TodolistType & {
+    filter: FilterValuesType
+}
+
+export const todolistsReducer = (state: Array<TodolistDomainType> = initialState, action: ActionsType): Array<TodolistDomainType> => {
     switch (action.type) {
+
+        case "SET-TODOLIST":
+            return action.todos.map((tl:TodolistType )=>{
+                return{...tl, filter: "all"}
+            })
+
         case 'REMOVE-TODOLIST': {
-            return state.filter(tl => tl.id != action.id)
+            return state.filter(tl => tl.id !== action.id)
         }
         case 'ADD-TODOLIST': {
             return [{
                 id: action.todolistId,
                 title: action.title,
-                filter: 'all'
+                filter: 'all',
+                addedDate: '',
+                order: 0
             }, ...state]
         }
         case 'CHANGE-TODOLIST-TITLE': {
@@ -73,3 +92,15 @@ export const changeTodolistFilterAC = (id: string, filter: FilterValuesType): Ch
     return { type: 'CHANGE-TODOLIST-FILTER', id: id, filter: filter}
 }
 
+
+
+export const setTodolistAC = (todos:Array<TodolistType> ) => {
+    return {
+        type: 'SET-TODOLIST',
+        todos:todos
+
+
+    } as const
+}
+
+export type   setTodolistActionType = ReturnType<typeof setTodolistAC >
