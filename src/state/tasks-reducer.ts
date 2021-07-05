@@ -159,11 +159,11 @@ export const fetchTaskTC = (todolistId: string) => {
 }
 
 
-export const removeTaskTC = (todolistId: string, id: string,) => (dispatch: Dispatch) => {
-    todolistsAPI.deleteTask(todolistId, id)
+export const removeTaskTC = (todolistId: string, taskId:string) => (dispatch: Dispatch) => {
+    todolistsAPI.deleteTask(todolistId,taskId)
         .then((res) => {
             if (res.data.resultCode === 0)
-                dispatch(removeTaskAC(todolistId, id))
+                dispatch(removeTaskAC(taskId,todolistId))
         })
 
 }
@@ -177,7 +177,7 @@ export const addTaskTC = ((todolistId: string, title: string) => (dispatch: Disp
         })
 
 })
-export const updateTaskStatusTC = ( todolistId: string,taskId: string, status: TaskStatuses) => {
+export const updateTaskStatusTC = (taskId: string, todolistId: string, status: TaskStatuses) => {
     return (dispatch: Dispatch, getState: () => AppRootStateType) => {
 
 // так как мы обязаны на сервер отправить все св-ва, которые сервер ожидает, а не только
@@ -199,10 +199,9 @@ export const updateTaskStatusTC = ( todolistId: string,taskId: string, status: T
                 deadline: task.deadline,
                 status: status
             }).then(() => {
-              changeTaskStatusAC(taskId, status, todolistId)
-                dispatch(changeTaskStatusAC(taskId, status, todolistId))
+                const action = changeTaskStatusAC(taskId, status, todolistId)
+                dispatch(action)
             })
         }
     }
 }
-
